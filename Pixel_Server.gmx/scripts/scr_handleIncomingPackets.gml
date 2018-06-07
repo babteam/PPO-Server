@@ -80,6 +80,38 @@ switch (msgid)
         network_send_packet(socket, global.buffer, buffer_tell(global.buffer));
         
         break;
+        
+//=======================================================================================================================
+    case 5:  
+            
+        var pId = buffer_read(buffer, buffer_u32);
+            ///Tell other players to delete player model
+                for (var i = 0; i < ds_list_size(global.players);i++)
+                    {
+                        var storedPlayerSocket = ds_list_find_value(global.players, i);
+                        
+                        if (storedPlayerSocket != socket)
+                        {
+                            var player = noone;
+                            
+                            with (obj_player)
+                            {
+                                if (self.playerSocket == storedPlayerSocket)
+                                {
+                                    player = id;
+                                }
+                            }
+                            
+                            if (player != noone)
+                            {
+                                    buffer_seek(global.buffer, buffer_seek_start, 0);
+                                    buffer_write(global.buffer, buffer_u8, 5);
+                                    buffer_write(global.buffer, buffer_u32, pId);
+                                    network_send_packet(socket, global.buffer, buffer_tell(global.buffer));  
+                            }
+                        }
+                    }
+        
 //=======================================================================================================================
     case 6:  //create gameworld and press Esc
         var pId = buffer_read(buffer, buffer_u32);
