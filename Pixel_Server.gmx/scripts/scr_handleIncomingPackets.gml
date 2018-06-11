@@ -111,7 +111,7 @@ switch (msgid)
                             }
                         }
                     }
-        
+        break;
 //=======================================================================================================================
     case 6:  //create gameworld and press Esc
         var pId = buffer_read(buffer, buffer_u32);
