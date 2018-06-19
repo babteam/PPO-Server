@@ -212,7 +212,9 @@ switch (msgid)
         var pId = buffer_read(buffer, buffer_u32);
         var xx = buffer_read(buffer, buffer_f32);
         var yy = buffer_read(buffer, buffer_f32);
-//        var spriteNumber = buffer_read(buffer, buffer_u8);
+            var hair = buffer_read(buffer, buffer_u16);
+            var outfit = buffer_read(buffer, buffer_u16);
+            var colour = buffer_read(buffer, buffer_u32);
         var frames = buffer_read(buffer, buffer_u8);
         var dir = buffer_read(buffer, buffer_u8);
         var rooms = buffer_read(buffer, buffer_u32);
@@ -229,7 +231,9 @@ switch (msgid)
                 buffer_write(global.buffer, buffer_u32, pId);
                 buffer_write(global.buffer, buffer_f32, xx);
                 buffer_write(global.buffer, buffer_f32, yy);
-                //buffer_write(global.buffer, buffer_u8, spriteNumber);
+                    buffer_write(global.buffer, buffer_u16, hair);
+                    buffer_write(global.buffer, buffer_u16, outfit);
+                    buffer_write(global.buffer, buffer_u32, colour);
                 buffer_write(global.buffer, buffer_u8, frames);
                 buffer_write(global.buffer, buffer_u8, dir);
                 buffer_write(global.buffer, buffer_u32, rooms);
