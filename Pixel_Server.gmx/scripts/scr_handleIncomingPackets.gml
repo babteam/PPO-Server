@@ -215,6 +215,8 @@ switch (msgid)
             var hair = buffer_read(buffer, buffer_u16);
             var outfit = buffer_read(buffer, buffer_u16);
             var colour = buffer_read(buffer, buffer_u32);
+            var hairColour = buffer_read(buffer, buffer_u32);
+            var outfitColour = buffer_read(buffer, buffer_u32);
         var frames = buffer_read(buffer, buffer_u8);
         var dir = buffer_read(buffer, buffer_u8);
         var rooms = buffer_read(buffer, buffer_u32);
@@ -234,6 +236,8 @@ switch (msgid)
                     buffer_write(global.buffer, buffer_u16, hair);
                     buffer_write(global.buffer, buffer_u16, outfit);
                     buffer_write(global.buffer, buffer_u32, colour);
+                    buffer_write(global.buffer, buffer_u32, hairColour);
+                    buffer_write(global.buffer, buffer_u32, outfitColour);
                 buffer_write(global.buffer, buffer_u8, frames);
                 buffer_write(global.buffer, buffer_u8, dir);
                 buffer_write(global.buffer, buffer_u32, rooms);
