@@ -436,6 +436,85 @@ switch (msgid)
         break;
 
 //=======================================================================================================================
+    case 15: //save player colors
+        var xxplayerUsername = buffer_read(buffer, buffer_string);
+        var xxhairCustom = buffer_read(buffer, buffer_u16);
+        var xxoutfitCustom = buffer_read(buffer, buffer_u16);
+        var xxdiaperCustom = buffer_read(buffer, buffer_u16);
+        var xxskinCol = buffer_read(buffer, buffer_u32);
+        var xxhairCol = buffer_read(buffer, buffer_u32);
+        var xxoutfitCol = buffer_read(buffer, buffer_u32);
+        
+        //register new player
+        ini_open("userAppearance.ini");
+        
+        ini_write_string(xxplayerUsername, "hair", xxhairCustom);
+        ini_write_string(xxplayerUsername, "outfit", xxoutfitCustom);
+        ini_write_string(xxplayerUsername, "diaper", xxdiaperCustom);
+        ini_write_string(xxplayerUsername, "skinColor", xxskinCol);
+        ini_write_string(xxplayerUsername, "hairColor", xxhairCol);
+        ini_write_string(xxplayerUsername, "outfitColor", xxoutfitCol);
+        scr_showNotification("Player updated appearance!");
+            
+        ini_close(); // don't forget to close ini files you open
+        
+        break;
+//=======================================================================================================================
+    case 16: // Load character button asking if data exists
+        var xxplayerUsername = buffer_read(buffer, buffer_string);
+        
+        ini_open("userAppearance.ini");
+        
+        if (ini_section_exists(xxplayerUsername))
+            {
+            
+                var xxhairCustom = ini_read_string(xxplayerUsername, "hair", "false");
+                var xxoutfitCustom = ini_read_string(xxplayerUsername, "outfit", "false");
+                var xxdiaperCustom = ini_read_string(xxplayerUsername, "diaper", "false");
+                var xxskinCol = ini_read_string(xxplayerUsername, "skinColor", "false");
+                var xxhairCol = ini_read_string(xxplayerUsername, "hairColor", "false");
+                var xxoutfitCol = ini_read_string(xxplayerUsername, "outfitColor", "false");
+                
+            
+                 buffer_seek(global.buffer, buffer_seek_start, 0);
+                buffer_write(global.buffer, buffer_u8, 16); //tell client what player appearance is
+                    buffer_write(global.buffer, buffer_u16, xxhairCustom);
+                    buffer_write(global.buffer, buffer_u16, xxoutfitCustom);
+                    buffer_write(global.buffer, buffer_u16, xxdiaperCustom);
+                    buffer_write(global.buffer, buffer_u32, xxskinCol);
+                    buffer_write(global.buffer, buffer_u32, xxhairCol);
+                    buffer_write(global.buffer, buffer_u32, xxoutfitCol);
+                network_send_packet(socket, global.buffer, buffer_tell(global.buffer));   
+            
+            }
+        
+        ini_close(); // don't forget to close ini files you open
+        
+        break;
+//=======================================================================================================================
+    case 17: //someone created a puddle
+        var xxroom = buffer_read(buffer, buffer_u8);
+        var xx = buffer_read(buffer, buffer_f32);
+        var yy = buffer_read(buffer, buffer_f32);
+        
+        for (var i = 0; i < ds_list_size(global.players);i++)
+        {
+            var storedPlayerSocket = ds_list_find_value(global.players, i); //dont send to the client we got this from
+            
+            if (storedPlayerSocket != socket)
+            {
+                buffer_seek(global.buffer, buffer_seek_start, 0);
+                buffer_write(global.buffer, buffer_u8, 17);
+                buffer_write(global.buffer, buffer_u8, xxroom);
+                buffer_write(global.buffer, buffer_f32, xx);
+                buffer_write(global.buffer, buffer_f32, yy);
+                network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+            }
+        }
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
 //=======================================================================================================================
 //=======================================================================================================================
 }
