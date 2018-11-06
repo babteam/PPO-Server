@@ -66,6 +66,8 @@ npcIdCounter++;
 
 
 scr_showNotification("Server is up!");
+
+randomize();
 </string>
           </argument>
         </arguments>

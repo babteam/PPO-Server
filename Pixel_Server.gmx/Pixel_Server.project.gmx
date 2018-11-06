@@ -7,6 +7,8 @@
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\bigSis</sprite>
+    <sprite>sprites\spr_NPC_walls</sprite>
+    <sprite>sprites\spr_WIP</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\background0</background>
@@ -23,12 +25,16 @@
     <font>fonts\fnt_1</font>
   </fonts>
   <objects name="objects">
+    <object>objects\obj_NPC_walls</object>
     <object>objects\obServer</object>
     <object>objects\obj_message</object>
     <object>objects\obj_player</object>
     <object>objects\obj_npc</object>
     <object>objects\obj_projectile</object>
     <object>objects\obj_ball</object>
+    <objects name="NPCs">
+      <object>objects\obj_npc_derpyDragon</object>
+    </objects>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>

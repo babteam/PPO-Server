@@ -512,6 +512,25 @@ switch (msgid)
             }
         }
 //=======================================================================================================================
+    case 18: //derpy NPC test
+        
+        obj_npc_derpyDragon.npcActive = 30;
+        
+//        for (var i = 0; i < ds_list_size(global.players);i++)
+//        {
+//            var storedPlayerSocket = ds_list_find_value(global.players, i); //dont send to the client we got this from
+            
+//            if (storedPlayerSocket == socket)
+//            {    
+        
+                buffer_seek(global.buffer, buffer_seek_start, 0);
+                buffer_write(global.buffer, buffer_u8, 18);
+                buffer_write(global.buffer, buffer_f32, obj_npc_derpyDragon.x);
+                buffer_write(global.buffer, buffer_f32, obj_npc_derpyDragon.y);
+                //network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+                network_send_packet(socket, global.buffer, buffer_tell(global.buffer));   
+//            }
+ //       }
 //=======================================================================================================================
 //=======================================================================================================================
 //=======================================================================================================================
