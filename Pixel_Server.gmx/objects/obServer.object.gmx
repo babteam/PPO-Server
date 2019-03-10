@@ -27,10 +27,12 @@
             <kind>1</kind>
             <string>/// initialize server object
 
-global.version = 2;
+scr_versionNumber();
 
 var networkType = network_socket_tcp;
 var port = 8000;
+    if(obj_dev_IP.x &gt; 320)
+        port = 7890;
 var maxPlayers = 32;
 var bufferSize = 1024;
 var bufferType = buffer_fixed;
@@ -63,11 +65,87 @@ i.npcType = irandom(3);
 npcIdCounter++;
 */
 //==========================================================================
+//==========================================================================
+//==========================================================================
+//==========================================================================
+//time variables
+minutes = 0;
+hours = -12;
+//==========================================================================
 
 
 scr_showNotification("Server is up!");
 
 randomize();
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>301</id>
+        <kind>0</kind>
+        <userelative>-1</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>1</exetype>
+        <functionname>action_set_alarm</functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>0</kind>
+            <string>30</string>
+          </argument>
+          <argument>
+            <kind>4</kind>
+            <string>0</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>minutes = minutes +1;
+
+if(minutes &gt; 60)
+    {
+        minutes = 0;
+        hours = hours + 1;
+            if(hours &gt; 11) hours = -12;
+            
+            //tell all players the time changed
+            for (var i = 0; i &lt; ds_list_size(global.players);i++)
+                {
+                        var storedPlayerSocket = ds_list_find_value(global.players, i);
+                
+                        buffer_seek(global.buffer, buffer_seek_start, 0);
+                        buffer_write(global.buffer, buffer_u8, 23);
+                        buffer_write(global.buffer, buffer_s8, hours);
+            
+                        network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+                }
+    
+    }
+
+alarm[0] = 30;
 </string>
           </argument>
         </arguments>
@@ -235,6 +313,8 @@ draw_set_valign(fa_middle);
 draw_text(5, 5, "Server status: " +string(server &gt;=0));
 draw_text(5, 20, "Total clients: " + string(ds_list_size(global.players)));
 
+draw_text(5, 40, "Game Time: " + string(hours) );
+
 var xx = room_width/2;
 var yy = 50;
 
@@ -292,6 +372,43 @@ for (var i = 0; i &lt; ds_list_size(global.players); i++)
     buffer_write(global.buffer, buffer_u8, npc.npcType);
     network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));
 }
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="10" enumb="72">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>        minutes = 0;
+        hours = hours + 1;
+            if(hours &gt; 11) hours = -12;
+            
+            //tell all players the time changed
+            for (var i = 0; i &lt; ds_list_size(global.players);i++)
+                {
+                        var storedPlayerSocket = ds_list_find_value(global.players, i);
+                
+                        buffer_seek(global.buffer, buffer_seek_start, 0);
+                        buffer_write(global.buffer, buffer_u8, 23);
+                        buffer_write(global.buffer, buffer_s8, hours);
+            
+                        network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+                }
 </string>
           </argument>
         </arguments>

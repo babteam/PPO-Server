@@ -213,11 +213,15 @@ switch (msgid)
         var xx = buffer_read(buffer, buffer_f32);
         var yy = buffer_read(buffer, buffer_f32);
             var hair = buffer_read(buffer, buffer_u16);
-            var outfit = buffer_read(buffer, buffer_u16);
+            var outfitTop = buffer_read(buffer, buffer_u16);
+            var outfitBottom = buffer_read(buffer, buffer_u16);
+            var skin = buffer_read(buffer, buffer_u8);
             var diaper = buffer_read(buffer, buffer_u16);
             var colour = buffer_read(buffer, buffer_u32);
             var hairColour = buffer_read(buffer, buffer_u32);
-            var outfitColour = buffer_read(buffer, buffer_u32);
+            var outfitTopColour = buffer_read(buffer, buffer_u32);
+             var outfitBottomColour = buffer_read(buffer, buffer_u32);
+            var xxpeeHold = buffer_read(buffer, buffer_u8);
         var frames = buffer_read(buffer, buffer_u8);
         var dir = buffer_read(buffer, buffer_u8);
         var rooms = buffer_read(buffer, buffer_u32);
@@ -235,11 +239,15 @@ switch (msgid)
                 buffer_write(global.buffer, buffer_f32, xx);
                 buffer_write(global.buffer, buffer_f32, yy);
                     buffer_write(global.buffer, buffer_u16, hair);
-                    buffer_write(global.buffer, buffer_u16, outfit);
+                    buffer_write(global.buffer, buffer_u16, outfitTop);
+                    buffer_write(global.buffer, buffer_u16, outfitBottom);
+                        buffer_write(global.buffer, buffer_u8, skin);
                     buffer_write(global.buffer, buffer_u16, diaper);
                     buffer_write(global.buffer, buffer_u32, colour);
                     buffer_write(global.buffer, buffer_u32, hairColour);
-                    buffer_write(global.buffer, buffer_u32, outfitColour);
+                    buffer_write(global.buffer, buffer_u32, outfitTopColour);
+                    buffer_write(global.buffer, buffer_u32, outfitBottomColour);
+                    buffer_write(global.buffer, buffer_u8, xxpeeHold);
                 buffer_write(global.buffer, buffer_u8, frames);
                 buffer_write(global.buffer, buffer_u8, dir);
                 buffer_write(global.buffer, buffer_u32, rooms);
@@ -439,21 +447,27 @@ switch (msgid)
     case 15: //save player colors
         var xxplayerUsername = buffer_read(buffer, buffer_string);
         var xxhairCustom = buffer_read(buffer, buffer_u16);
-        var xxoutfitCustom = buffer_read(buffer, buffer_u16);
+        var xxoutfitTopCustom = buffer_read(buffer, buffer_u16);
+            var xxoutfitBottomCustom = buffer_read(buffer, buffer_u16);
+        var xxskinCustom = buffer_read(buffer, buffer_u8);
         var xxdiaperCustom = buffer_read(buffer, buffer_u16);
         var xxskinCol = buffer_read(buffer, buffer_u32);
         var xxhairCol = buffer_read(buffer, buffer_u32);
-        var xxoutfitCol = buffer_read(buffer, buffer_u32);
+        var xxoutfitTopCol = buffer_read(buffer, buffer_u32);
+        var xxoutfitBottomCol = buffer_read(buffer, buffer_u32);
         
         //register new player
         ini_open("userAppearance.ini");
         
         ini_write_string(xxplayerUsername, "hair", xxhairCustom);
-        ini_write_string(xxplayerUsername, "outfit", xxoutfitCustom);
+        ini_write_string(xxplayerUsername, "outfitTop", xxoutfitTopCustom);
+            ini_write_string(xxplayerUsername, "outfitBottom", xxoutfitBottomCustom);
+        ini_write_string(xxplayerUsername, "skin", xxskinCustom);
         ini_write_string(xxplayerUsername, "diaper", xxdiaperCustom);
         ini_write_string(xxplayerUsername, "skinColor", xxskinCol);
         ini_write_string(xxplayerUsername, "hairColor", xxhairCol);
-        ini_write_string(xxplayerUsername, "outfitColor", xxoutfitCol);
+        ini_write_string(xxplayerUsername, "outfitTopColor", xxoutfitTopCol);
+        ini_write_string(xxplayerUsername, "outfitBottomColor", xxoutfitBottomCol);
         scr_showNotification("Player updated appearance!");
             
         ini_close(); // don't forget to close ini files you open
@@ -469,25 +483,52 @@ switch (msgid)
             {
             
                 var xxhairCustom = ini_read_string(xxplayerUsername, "hair", "false");
-                var xxoutfitCustom = ini_read_string(xxplayerUsername, "outfit", "false");
+                var xxoutfitTopCustom = ini_read_string(xxplayerUsername, "outfitTop", "false");
+                    var xxoutfitBottomCustom = ini_read_string(xxplayerUsername, "outfitBottom", "false");
+                var xxskinCustom = ini_read_string(xxplayerUsername, "skin", "false");
                 var xxdiaperCustom = ini_read_string(xxplayerUsername, "diaper", "false");
                 var xxskinCol = ini_read_string(xxplayerUsername, "skinColor", "false");
                 var xxhairCol = ini_read_string(xxplayerUsername, "hairColor", "false");
-                var xxoutfitCol = ini_read_string(xxplayerUsername, "outfitColor", "false");
+                var xxoutfitTopCol = ini_read_string(xxplayerUsername, "outfitTopColor", "false");
+                    var xxoutfitBottomCol = ini_read_string(xxplayerUsername, "outfitBottomColor", "false");
                 
             
                  buffer_seek(global.buffer, buffer_seek_start, 0);
                 buffer_write(global.buffer, buffer_u8, 16); //tell client what player appearance is
                     buffer_write(global.buffer, buffer_u16, xxhairCustom);
-                    buffer_write(global.buffer, buffer_u16, xxoutfitCustom);
+                    buffer_write(global.buffer, buffer_u16, xxoutfitTopCustom);
+                        buffer_write(global.buffer, buffer_u16, xxoutfitBottomCustom);
+                    buffer_write(global.buffer, buffer_u8, xxskinCustom);
                     buffer_write(global.buffer, buffer_u16, xxdiaperCustom);
                     buffer_write(global.buffer, buffer_u32, xxskinCol);
                     buffer_write(global.buffer, buffer_u32, xxhairCol);
-                    buffer_write(global.buffer, buffer_u32, xxoutfitCol);
+                    buffer_write(global.buffer, buffer_u32, xxoutfitTopCol);
+                        buffer_write(global.buffer, buffer_u32, xxoutfitBottomCol);
                 network_send_packet(socket, global.buffer, buffer_tell(global.buffer));   
-            
             }
+        ini_close(); // don't forget to close ini files you open
         
+        
+        ini_open("userItems.ini");
+            
+            if (ini_section_exists(xxplayerUsername))
+                {
+                    
+                    buffer_seek(global.buffer, buffer_seek_start, 0);
+                    buffer_write(global.buffer, buffer_u8, 20);
+                    
+                        var i;
+                        i = 25;
+                        repeat(25)
+                           {
+                                var xxItemRead = ini_read_string(xxplayerUsername, i, "false");
+                                buffer_write(global.buffer, buffer_u16, xxItemRead);
+                                i -= 1;
+                           }
+                    
+                    network_send_packet(socket, global.buffer, buffer_tell(global.buffer));
+                }
+            
         ini_close(); // don't forget to close ini files you open
         
         break;
@@ -511,17 +552,12 @@ switch (msgid)
                 network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
             }
         }
+        
+        break;
 //=======================================================================================================================
     case 18: //derpy NPC test
         
         obj_npc_derpyDragon.npcActive = 30;
-        
-//        for (var i = 0; i < ds_list_size(global.players);i++)
-//        {
-//            var storedPlayerSocket = ds_list_find_value(global.players, i); //dont send to the client we got this from
-            
-//            if (storedPlayerSocket == socket)
-//            {    
         
                 buffer_seek(global.buffer, buffer_seek_start, 0);
                 buffer_write(global.buffer, buffer_u8, 18);
@@ -529,8 +565,83 @@ switch (msgid)
                 buffer_write(global.buffer, buffer_f32, obj_npc_derpyDragon.y);
                 //network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
                 network_send_packet(socket, global.buffer, buffer_tell(global.buffer));   
-//            }
- //       }
+                
+        break;
+
+//=======================================================================================================================
+
+    case 19:  //player saved a new item
+        var xxplayerUsername = buffer_read(buffer, buffer_string);
+        var savingItemSlot = buffer_read(buffer, buffer_u8);
+        var savingItem = buffer_read(buffer, buffer_u16);
+        
+        ini_open("userItems.ini");
+            
+            ini_write_string(xxplayerUsername, savingItemSlot, savingItem);
+        
+        ini_close(); // don't forget to close ini files you open
+        
+        break;
+
+//=======================================================================================================================
+    case 21:  // get player updates // localplayer/step_1
+    var pId = buffer_read(buffer, buffer_u32);
+    var face_xx = buffer_read(buffer, buffer_u8);
+    
+            //tell other players about this change
+    for (var i = 0; i < ds_list_size(global.players);i++)
+    {
+        var storedPlayerSocket = ds_list_find_value(global.players, i);
+        
+        if (storedPlayerSocket != socket)
+        {
+            buffer_seek(global.buffer, buffer_seek_start, 0);
+            buffer_write(global.buffer, buffer_u8, 21);
+            buffer_write(global.buffer, buffer_u32, pId);
+            buffer_write(global.buffer, buffer_u8, face_xx);
+
+            network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+        }
+    }
+    break;
+//=======================================================================================================================
+    case 22:  //tell other players that we're typing
+        var pId = buffer_read(buffer, buffer_u32);
+        var typing_xx = buffer_read(buffer, buffer_u8);
+        
+                //tell other players about this change
+        for (var i = 0; i < ds_list_size(global.players);i++)
+        {
+            var storedPlayerSocket = ds_list_find_value(global.players, i);
+            
+            if (storedPlayerSocket != socket)
+            {
+                buffer_seek(global.buffer, buffer_seek_start, 0);
+                buffer_write(global.buffer, buffer_u8, 22);
+                buffer_write(global.buffer, buffer_u32, pId);
+                buffer_write(global.buffer, buffer_u8, typing_xx);
+    
+                network_send_packet(storedPlayerSocket, global.buffer, buffer_tell(global.buffer));   
+            }
+        }
+    break;
+//=======================================================================================================================
+    case 23: //tell time when player asks
+        buffer_seek(global.buffer, buffer_seek_start, 0);
+        buffer_write(global.buffer, buffer_u8, 23);
+        buffer_write(global.buffer, buffer_s8, hours);
+        network_send_packet(socket, global.buffer, buffer_tell(global.buffer));
+    break;
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
+//=======================================================================================================================
 //=======================================================================================================================
 //=======================================================================================================================
 //=======================================================================================================================

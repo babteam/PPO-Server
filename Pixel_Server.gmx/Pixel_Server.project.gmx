@@ -9,12 +9,14 @@
     <sprite>sprites\bigSis</sprite>
     <sprite>sprites\spr_NPC_walls</sprite>
     <sprite>sprites\spr_WIP</sprite>
+    <sprite>sprites\spr_dev_IP</sprite>
   </sprites>
   <backgrounds name="background">
-    <background>background\background0</background>
+    <background>background\bck_server_port</background>
   </backgrounds>
   <paths name="paths"/>
   <scripts name="scripts">
+    <script>scripts\scr_versionNumber.gml</script>
     <script>scripts\scr_handleIncomingPackets.gml</script>
     <script>scripts\scr_showNotification.gml</script>
     <scripts name="useless Scripts">
@@ -35,6 +37,7 @@
     <objects name="NPCs">
       <object>objects\obj_npc_derpyDragon</object>
     </objects>
+    <object>objects\obj_dev_IP</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
